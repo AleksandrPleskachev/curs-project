@@ -1,0 +1,26 @@
+@startuml
+actor Заказчик as customer
+participant "ProjectController" as pc
+participant "ProjectControl" as pco
+participant "ProjectMediator" as pm
+participant "ProjectRepository" as pr
+participant "TaskRepository" as tr
+participant "База данных" as db
+
+customer -> pc: GET /api/projects/{id}
+pc -> pco: findProjectById(id)
+pco -> pm: findProjectById(id)
+pm -> pr: findById(id)
+pr --> db: SELECT * FROM project
+pr --> pm: project
+
+' Загрузка связанных задач
+pm -> tr: findByProjectId(projectId)
+tr --> db: SELECT * FROM task
+tr --> pm: tasks
+
+pm --> pco: project (с задачами)
+pco --> pc: project
+pc --> customer: 200 OK, project
+
+@enduml

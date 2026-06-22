@@ -1,0 +1,36 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+actor "Менеджер по работе с клиентами" as manager
+actor "Инженер-сметчик" as estimator
+actor "Руководитель проекта" as project_manager
+actor "Бухгалтер" as accountant
+actor "Заказчик" as client
+actor "Администратор системы" as admin
+
+rectangle "Бизнес-прецеденты" {
+    usecase "Управление заказчиками (CRUD)" as uc1
+    usecase "Создание и расчет сметы" as uc2
+    usecase "Управление строительными проектами (CRUD)" as uc3
+    usecase "Назначение задач сотрудникам" as uc4
+    usecase "Отслеживание прогресса задач" as uc5
+    usecase "Управление договорами" as uc6
+    usecase "Управление оборудованием" as uc7
+    usecase "Формирование отчетов" as uc8
+    usecase "Аутентификация и управление ролями" as uc9
+}
+
+manager --> uc1 : включает
+manager --> uc3 : включает
+estimator --> uc2 : включает
+project_manager --> uc3 : включает
+project_manager --> uc4 : включает
+project_manager --> uc5 : включает
+accountant --> uc6 : включает
+accountant --> uc8 : включает
+client --> uc3 : использует
+client --> uc5 : использует
+admin --> uc9 : включает
+admin --> uc1 : управляет
+
+@enduml

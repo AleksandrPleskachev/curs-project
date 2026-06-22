@@ -1,0 +1,33 @@
+@startuml
+actor "Руководитель проекта" as director
+participant "EstimateController" as ec
+participant "EstimateControl" as eco
+participant "EstimateMediator" as em
+participant "EstimateRepository" as er
+participant "TaskMediator" as tm
+participant "TaskRepository" as tr
+participant "NotificationService" as ns
+participant "База данных" as db
+
+director -> ec: PUT /api/estimates/{id}/approve
+ec -> eco: approveEstimate(id)
+eco -> em: approveEstimate(id)
+em -> er: findById(id)
+er --> db: SELECT * FROM estimate
+em --> er: estimate
+em -> er: save(estimate)
+er --> db: UPDATE estimate
+em --> eco: estimate
+eco --> ec: estimate
+ec --> director: 200 OK, estimate
+
+' Создание задачи и отправка уведомления
+eco -> tm: createTaskForProjectStart(projectId)
+tm -> tr: save(task)
+tr --> db: INSERT INTO task
+tm --> eco: task
+
+eco -> ns: sendApprovalNotification(estimate)
+ns --> director: Email/SMS
+
+@enduml

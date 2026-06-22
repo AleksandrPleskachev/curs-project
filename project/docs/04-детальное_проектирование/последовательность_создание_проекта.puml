@@ -1,0 +1,27 @@
+@startuml
+actor Менеджер as manager
+participant "ProjectController" as pc
+participant "ProjectControl" as pco
+participant "ProjectMediator" as pm
+participant "ProjectRepository" as pr
+participant "TaskMediator" as tm
+participant "TaskRepository" as tr
+participant "База данных" as db
+
+manager -> pc: POST /api/projects
+pc -> pco: createProject(projectDTO)
+pco -> pm: createProject(project)
+pm -> pr: save(project)
+pr --> db: INSERT INTO project
+pr --> pm: project (с ID)
+pm --> pco: project
+pco --> pc: project
+pc --> manager: 201 Created, project
+
+' Автоматическое создание задачи
+pco -> tm: createInitialTask(project)
+tm -> tr: save(task)
+tr --> db: INSERT INTO task
+tm --> pco: task
+
+@enduml

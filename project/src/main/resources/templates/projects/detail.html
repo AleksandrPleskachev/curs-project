@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${project.name} + ' - Детали проекта'">Детали проекта</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .project-info-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .project-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .project-header h1 {
+            font-weight: 600;
+            margin: 0;
+        }
+        .info-row {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #666;
+            font-size: 0.9rem;
+            min-width: 120px;
+            font-weight: 500;
+        }
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        .badge-custom {
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .btn-sm-custom {
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .btn-primary-custom {
+            background-color: #667eea;
+            border: none;
+        }
+        .btn-primary-custom:hover {
+            background-color: #5a6fd6;
+        }
+        .btn-warning-custom {
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+        }
+        .btn-warning-custom:hover {
+            background-color: #e0a800;
+            color: #333;
+        }
+        .btn-danger-custom {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger-custom:hover {
+            background-color: #bb2d3b;
+        }
+        .section-title {
+            background: #f8f9fa;
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #eee;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        .table-custom {
+            margin-bottom: 0;
+        }
+        .table-custom tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="bi bi-building-fill me-2"></i>СтройКомпания
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks/my">
+                            <i class="bi bi-list-task me-1"></i>Мои задачи
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>Профиль
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Мой профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="project-info-card">
+            <div class="project-header">
+                <h1 th:text="${project.name}">Название проекта</h1>
+                <p class="mb-0" th:text="${project.address}">Адрес объекта</p>
+            </div>
+
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="bi bi-info-circle me-2 text-primary"></i>Информация о проекте</h4>
+                    <div>
+                        <a href="/projects" class="btn btn-secondary btn-sm-custom me-2">
+                            <i class="bi bi-arrow-left me-1"></i>Назад
+                        </a>
+                        <a th:href="@{/projects/{id}/edit(id=${project.id})}" class="btn btn-warning btn-sm-custom me-2" th:if="${isAdmin}">
+                            <i class="bi bi-pencil me-1"></i>Редактировать
+                        </a>
+                        <form th:action="@{/projects/{id}/delete(id=${project.id})}" method="post" style="display:inline;" th:if="${isAdmin}">
+                            <button type="submit" class="btn btn-danger btn-sm-custom" onclick="return confirm('Вы уверены, что хотите удалить этот проект?');">
+                                <i class="bi bi-trash me-1"></i>Удалить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-tag me-2 text-primary"></i>ID проекта</div>
+                    <div class="info-value" th:text="${project.id}">1</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-geo-fill me-2 text-primary"></i>Адрес объекта</div>
+                    <div class="info-value" th:text="${project.address}">Город, улица, дом</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-cash-stack me-2 text-primary"></i>Бюджет</div>
+                    <div class="info-value" th:text="${#numbers.formatDecimal(project.budget, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-calendar-range me-2 text-primary"></i>Сроки выполнения</div>
+                    <div class="info-value">
+                        <span th:text="'С ' + ${#temporals.format(project.startDate, 'dd.MM.yyyy')} + ' по ' + ${#temporals.format(project.endDate, 'dd.MM.yyyy')}">
+                            С 01.01.2026 по 31.12.2026
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-box-seam me-2 text-primary"></i>Статус</div>
+                    <div class="info-value">
+                        <span th:if="${project.status == 'ACTIVE'}" class="badge bg-success badge-custom">
+                            <i class="bi bi-play-fill me-1"></i>В работе
+                        </span>
+                        <span th:if="${project.status == 'COMPLETED'}" class="badge bg-success badge-custom">
+                            <i class="bi bi-check-circle me-1"></i>Завершен
+                        </span>
+                        <span th:if="${project.status == 'PAUSED'}" class="badge bg-warning text-dark badge-custom">
+                            <i class="bi bi-pause-fill me-1"></i>Приостановлен
+                        </span>
+                        <span th:if="${project.status == 'CANCELLED'}" class="badge bg-danger badge-custom">
+                            <i class="bi bi-x-circle me-1"></i>Отменен
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-people me-2 text-primary"></i>Заказчик</div>
+                    <div class="info-value" th:text="${project.customer.name}">ООО "Компания"</div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-label"><i class="bi bi-file-text me-2 text-primary"></i>Описание</div>
+                    <div class="info-value">Нет описания</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Задачи -->
+        <div class="project-info-card">
+            <div class="section-title">
+                <i class="bi bi-list-check me-2 text-primary"></i>Задачи проекта
+            </div>
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a href="/tasks/new" class="btn btn-primary-custom btn-sm-custom" th:if="${isAdmin}">
+                        <i class="bi bi-plus-circle me-1"></i>Новая задача
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(project.tasks)}" class="alert alert-info text-center">
+                    <i class="bi bi-inbox me-2"></i>Нет задач для этого проекта
+                </div>
+
+                <div th:if="${!#lists.isEmpty(project.tasks)}" class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Описание</th>
+                                <th>Исполнитель</th>
+                                <th>Статус</th>
+                                <th>Приоритет</th>
+                                <th>Срок</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="task : ${project.tasks}">
+                                <td th:text="${task.id}">1</td>
+                                <td th:text="${task.name}">Название задачи</td>
+                                <td th:text="${#strings.substring(task.description, 0, 40) + (#strings.length(task.description) > 40 ? '...' : '')}">Описание</td>
+                                <td th:text="${task.employee.name}">Иванов Иван</td>
+                                <td>
+                                    <span th:if="${task.status == 'TODO'}" class="badge bg-secondary badge-custom">
+                                        <i class="bi bi-clock me-1"></i>Новая
+                                    </span>
+                                    <span th:if="${task.status == 'IN_PROGRESS'}" class="badge bg-primary badge-custom">
+                                        <i class="bi bi-play-fill me-1"></i>В работе
+                                    </span>
+                                    <span th:if="${task.status == 'DONE'}" class="badge bg-success badge-custom">
+                                        <i class="bi bi-check-circle me-1"></i>Готово
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${task.priority == 'HIGH'}" class="badge bg-danger badge-custom">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Высокий
+                                    </span>
+                                    <span th:if="${task.priority == 'MEDIUM'}" class="badge bg-warning text-dark badge-custom">
+                                        <i class="bi bi-dash-circle me-1"></i>Средний
+                                    </span>
+                                    <span th:if="${task.priority == 'LOW'}" class="badge bg-secondary badge-custom">
+                                        <i class="bi bi-circle me-1"></i>Низкий
+                                    </span>
+                                </td>
+                                <td th:text="'С ' + ${#temporals.format(task.plannedStartDate, 'dd.MM.yyyy')} + ' по ' + ${#temporals.format(task.plannedEndDate, 'dd.MM.yyyy')}">
+                                    С 01.01.2026 по 31.01.2026
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сметы -->
+        <div class="project-info-card">
+            <div class="section-title">
+                <i class="bi bi-calculator me-2 text-primary"></i>Сметы проекта
+            </div>
+            <div class="p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a href="/estimates/new" class="btn btn-primary-custom btn-sm-custom" th:if="${isAdmin}">
+                        <i class="bi bi-plus-circle me-1"></i>Новая смета
+                    </a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(project.estimates)}" class="alert alert-info text-center">
+                    <i class="bi bi-inbox me-2"></i>Нет смет для этого проекта
+                </div>
+
+                <div th:if="${!#lists.isEmpty(project.estimates)}" class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Общая сумма</th>
+                                <th>Статус</th>
+                                <th>Дата создания</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="estimate : ${project.estimates}">
+                                <td th:text="${estimate.id}">1</td>
+                                <td th:text="'Смета # ' + ${estimate.id}">Смета</td>
+                                <td th:text="${#numbers.formatDecimal(estimate.totalCost, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</td>
+                                <td>
+                                    <span th:if="${estimate.status == 'DRAFT'}" class="badge bg-secondary badge-custom">
+                                        <i class="bi bi-pencil me-1"></i>Черновик
+                                    </span>
+                                    <span th:if="${estimate.status == 'APPROVED'}" class="badge bg-success badge-custom">
+                                        <i class="bi bi-check-circle me-1"></i>Утверждена
+                                    </span>
+                                    <span th:if="${estimate.status == 'REJECTED'}" class="badge bg-danger badge-custom">
+                                        <i class="bi bi-x-circle me-1"></i>Отклонена
+                                    </span>
+                                </td>
+                                <td th:text="${#temporals.format(estimate.createdAt, 'dd.MM.yyyy')}">01.01.2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

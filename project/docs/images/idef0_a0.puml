@@ -1,0 +1,52 @@
+@startuml
+left to right direction
+
+rectangle "Управление строительными проектами\n(A-0)" as A0 {
+    folder "Входы (Inputs)" as inputs {
+        file "Заявки от заказчиков" as input1
+        file "Технические задания" as input2
+        file "Данные о материалах и оборудовании" as input3
+        file "Данные о персонале" as input4
+    }
+    
+    folder "Выходы (Outputs)" as outputs {
+        file "Утвержденные сметы" as output1
+        file "Подписанные договоры" as output2
+        file "Отчеты о ходе строительства" as output3
+        file "Готовые объекты" as output4
+    }
+    
+    folder "Механизмы (Mechanisms)" as mechanisms {
+        file "Персонал компании" as mechanism1
+        file "Информационная система" as mechanism2
+        file "Офисное оборудование" as mechanism3
+    }
+    
+    folder "Управление (Controls)" as controls {
+        file "СНиП, ГОСТ" as control1
+        file "Бюджет проекта" as control2
+        file "Договорные обязательства" as control3
+        file "Внутренние регламенты" as control4
+    }
+}
+
+input1 --> A0
+input2 --> A0
+input3 --> A0
+input4 --> A0
+
+A0 --> output1
+A0 --> output2
+A0 --> output3
+A0 --> output4
+
+mechanism1 --> A0
+mechanism2 --> A0
+mechanism3 --> A0
+
+control1 --> A0
+control2 --> A0
+control3 --> A0
+control4 --> A0
+
+@enduml

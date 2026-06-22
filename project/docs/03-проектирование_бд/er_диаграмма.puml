@@ -1,0 +1,110 @@
+@startuml
+
+
+' Сущности и их атрибуты
+entity "project" as project {
+  * id : bigint <<generated>>
+  --
+  name : varchar(255)
+  address : varchar(500)
+  budget : decimal(19,2)
+  start_date : date
+  end_date : date
+  status : varchar(50)
+}
+
+entity "customer" as customer {
+  * id : bigint <<generated>>
+  --
+  name : varchar(255)
+  email : varchar(255)
+  phone : varchar(20)
+}
+
+entity "estimate" as estimate {
+  * id : bigint <<generated>>
+  --
+  total_cost : decimal(19,2)
+  currency : varchar(3)
+  creation_date : date
+  status : varchar(50)
+}
+
+entity "contract" as contract {
+  * id : bigint <<generated>>
+  --
+  number : varchar(100)
+  signing_date : date
+  amount : decimal(19,2)
+  status : varchar(50)
+}
+
+entity "task" as task {
+  * id : bigint <<generated>>
+  --
+  name : varchar(255)
+  description : text
+  priority : varchar(20)
+  status : varchar(50)
+  planned_start_date : date
+  planned_end_date : date
+  actual_end_date : date
+  project_id : bigint
+  employee_id : bigint
+}
+
+entity "employee" as employee {
+  * id : bigint <<generated>>
+  --
+  name : varchar(255)
+  position : varchar(100)
+  email : varchar(255)
+  phone : varchar(20)
+}
+
+entity "app_user" as app_user {
+  * id : bigint <<generated>>
+  --
+  username : varchar(50)
+  password : varchar(255)
+  email : varchar(255)
+  role : varchar(20)
+  employee_id : bigint
+}
+
+' Связи между сущностями
+project ||--|| customer : "initiated_by"
+project ||--||{ estimate : "has"
+project ||--|| contract : "governed_by"
+project ||--||{ task : "contains"
+task }|--|| employee : "assigned_to"
+app_user }|--|| employee : "linked_to"
+
+' Уникальные индексы и ограничения
+note right of project
+  PK: id
+  UK: (name, address) - условно
+end note
+
+note right of customer
+  PK: id
+  UK: email
+end note
+
+note right of contract
+  PK: id
+  UK: number
+end note
+
+note right of employee
+  PK: id
+  UK: email
+end note
+
+note right of app_user
+  PK: id
+  UK: username
+  UK: email
+end note
+
+@enduml

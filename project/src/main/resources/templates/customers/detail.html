@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали заказчика</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">СтройКомпания</a>
+        <div class="navbar-nav ms-auto">
+            <span class="navbar-text me-3">Привет, <span th:text="${username}">Пользователь</span>!</span>
+            <a class="nav-link" href="/logout">Выйти</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 th:text="${customer.name}">Имя заказчика</h1>
+        <div>
+            <a href="/customers" class="btn btn-secondary">Назад к списку</a>
+            <a th:href="@{/customers/{id}/edit(id=${customer.id})}" class="btn btn-warning">Редактировать</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Информация о заказчике</h5>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>ID:</strong></div>
+                <div class="col-md-8" th:text="${customer.id}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Имя:</strong></div>
+                <div class="col-md-8" th:text="${customer.name}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Email:</strong></div>
+                <div class="col-md-8" th:text="${customer.email}"></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><strong>Телефон:</strong></div>
+                <div class="col-md-8" th:text="${customer.phone}"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Действия -->
+    <div class="mt-4">
+        <form th:action="@{/customers/{id}/delete(id=${customer.id})}" method="post">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этого заказчика?');">Удалить заказчика</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

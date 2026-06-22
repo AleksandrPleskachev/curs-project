@@ -1,0 +1,75 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+' Сущности (Entity)
+entity "Проект" as Project {
+  + *id: Long
+  + название: String
+  + адрес: String
+  + бюджет: BigDecimal
+  + дата_начала: LocalDate
+  + дата_окончания: LocalDate
+  + статус: String
+}
+
+entity "Заказчик" as Customer {
+  + *id: Long
+  + имя: String
+  + email: String
+  + телефон: String
+}
+
+entity "Смета" as Estimate {
+  + *id: Long
+  + общая_стоимость: BigDecimal
+  + статус: String
+  + дата_создания: LocalDate
+}
+
+entity "Договор" as Contract {
+  + *id: Long
+  + номер: String
+  + дата_подписания: LocalDate
+  + сумма: BigDecimal
+  + статус: String
+}
+
+entity "Задача" as Task {
+  + *id: Long
+  + название: String
+  + статус: String
+  + приоритет: String
+  + плановая_дата_окончания: LocalDate
+}
+
+entity "Сотрудник" as Employee {
+  + *id: Long
+  + имя: String
+  + должность: String
+  + email: String
+}
+
+entity "Оборудование" as Equipment {
+  + *id: Long
+  + название: String
+  + серийный_номер: String
+  + статус: String
+}
+
+' Ассоциации
+Customer ||..|| Project : инициирует
+Project ||..|| Estimate : включает
+Project ||..|| Contract : регулируется
+Project }o..|| Task : содержит
+Task }o..|| Employee : назначена
+Project }o..|| Equipment : использует
+
+' Наследование (если нужно, например, для разных типов сотрудников)
+' class Manager << (M, #FF7700) >>
+' class Engineer << (E, #0088DD) >>
+' Employee <|-- Manager
+' Employee <|-- Engineer
+
+@enduml

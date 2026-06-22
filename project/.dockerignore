@@ -1,0 +1,26 @@
+# Maven
+target/
+pom.xml
+*.iml
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Documentation (можно оставить, если хотите включить в образ)
+docs/
+README.md
+
+# Docker files (исключаем из образа)
+Dockerfile
+docker-compose.yml
+.dockerignore

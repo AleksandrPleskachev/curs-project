@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчёты - СтройКомпания</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-custom {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .report-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .report-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .text-primary-custom {
+            color: #667eea !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="bi bi-building-fill me-2"></i>СтройКомпания
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">
+                            <i class="bi bi-house-door me-1"></i>Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks/my">
+                            <i class="bi bi-list-task me-1"></i>Мои задачи
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>Профиль
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Мой профиль</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary-custom"><i class="bi bi-graph-up me-2"></i>Отчёты и аналитика</h1>
+            <p class="lead text-muted">Общая информация о состоянии проектов, задач, смет и других ресурсов</p>
+        </div>
+
+        <div class="row">
+            <!-- Отчёт по проектам -->
+            <div class="col-md-4 mb-4">
+                <div class="card report-card h-100">
+                    <div class="card-body text-center">
+                        <div class="report-icon text-primary-custom">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <h5 class="card-title">Отчёт по проектам</h5>
+                        <p class="card-text">Общая информация обо всех проектах, включая статистику по статусам, бюджетам и срокам.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><strong>Всего проектов:</strong> <span th:text="${#lists.size(projects)}">0</span></li>
+                            <li><strong>В работе:</strong> <span th:text="${activeProjectsCount}">0</span></li>
+                            <li><strong>Завершено:</strong> <span th:text="${completedProjectsCount}">0</span></li>
+                            <li><strong>Общий бюджет:</strong> <span th:text="${#numbers.formatDecimal(totalBudget, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</span></li>
+                        </ul>
+                        <a href="/projects" class="btn btn-primary-custom w-100">Перейти к проектам</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отчёт по задачам -->
+            <div class="col-md-4 mb-4">
+                <div class="card report-card h-100">
+                    <div class="card-body text-center">
+                        <div class="report-icon text-success">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        <h5 class="card-title">Отчёт по задачам</h5>
+                        <p class="card-text">Статистика по выполнению задач по всем проектам.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><strong>Всего задач:</strong> <span th:text="${#lists.size(tasks)}">0</span></li>
+                            <li><strong>В работе:</strong> <span th:text="${inProgressTasksCount}">0</span></li>
+                            <li><strong>Готово:</strong> <span th:text="${doneTasksCount}">0</span></li>
+                            <li><strong>Новые:</strong> <span th:text="${todoTasksCount}">0</span></li>
+                        </ul>
+                        <a href="/tasks" class="btn btn-primary-custom w-100">Перейти к задачам</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отчёт по сметам -->
+            <div class="col-md-4 mb-4">
+                <div class="card report-card h-100">
+                    <div class="card-body text-center">
+                        <div class="report-icon text-danger">
+                            <i class="bi bi-calculator"></i>
+                        </div>
+                        <h5 class="card-title">Отчёт по сметам</h5>
+                        <p class="card-text">Финансовая информация по всем сметам.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><strong>Всего смет:</strong> <span th:text="${#lists.size(estimates)}">0</span></li>
+                            <li><strong>Утверждено:</strong> <span th:text="${approvedEstimatesCount}">0</span></li>
+                            <li><strong>Общая сумма:</strong> <span th:text="${#numbers.formatDecimal(totalEstimateCost, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</span></li>
+                        </ul>
+                        <a href="/estimates" class="btn btn-primary-custom w-100">Перейти к сметам</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отчёт по сотрудникам -->
+            <div class="col-md-4 mb-4">
+                <div class="card report-card h-100">
+                    <div class="card-body text-center">
+                        <div class="report-icon text-info">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="card-title">Отчёт по сотрудникам</h5>
+                        <p class="card-text">Информация о персонале компании.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><strong>Всего сотрудников:</strong> <span th:text="${#lists.size(employees)}">0</span></li>
+                            <li><strong>Свободных:</strong> <span th:text="${freeEmployeesCount}">0</span></li>
+                            <li><strong>Заняты в проектах:</strong> <span th:text="${employedEmployeesCount}">0</span></li>
+                        </ul>
+                        <a href="/employees" class="btn btn-primary-custom w-100">Перейти к сотрудникам</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Отчёт по договорам -->
+            <div class="col-md-4 mb-4">
+                <div class="card report-card h-100">
+                    <div class="card-body text-center">
+                        <div class="report-icon text-secondary">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <h5 class="card-title">Отчёт по договорам</h5>
+                        <p class="card-text">Финансовые обязательства по договорам.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><strong>Всего договоров:</strong> <span th:text="${#lists.size(contracts)}">0</span></li>
+                            <li><strong>Действующие:</strong> <span th:text="${activeContractsCount}">0</span></li>
+                            <li><strong>Общая сумма:</strong> <span th:text="${#numbers.formatDecimal(totalContractAmount, 0, 'COMMA', 2, 'POINT')} + ' ₽'">0 ₽</span></li>
+                        </ul>
+                        <a href="/contracts" class="btn btn-primary-custom w-100">Перейти к договорам</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/dashboard" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>В панель управления
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
